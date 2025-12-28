@@ -1,0 +1,262 @@
+---
+layout: null
+permalink: /continuar/
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Continuar no navegador</title>
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    :root{
+      --bg1:#0b0505;
+      --bg2:#150701;
+      --card:#ffffff;
+      --text:#1b1b1b;
+      --muted:#5b5b5b;
+      --btn:#2b0f0f;
+      --btn2:#ffffff;
+      --border:rgba(0,0,0,.10);
+      --shadow:0 18px 55px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{ --card:#111; --text:#f1f1f1; --muted:#b7b7b7; --border:rgba(255,255,255,.10); --shadow:0 18px 55px rgba(0,0,0,.55); }
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(255,255,255,.08), transparent 60%),
+                  radial-gradient(900px 600px at 90% 90%, rgba(255,255,255,.06), transparent 55%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:22px;
+    }
+    .wrap{ width:min(560px, 100%); }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      color:#fff; opacity:.95; margin:0 0 14px;
+    }
+    .dot{
+      width:12px; height:12px; border-radius:999px;
+      background: #caa77a;
+      box-shadow: 0 0 0 6px rgba(202,167,122,.16);
+    }
+    .brand span{ font-weight:700; letter-spacing:.2px; }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .top{
+      padding:18px 18px 0;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--text);
+      font-size:13px;
+      opacity:.95;
+    }
+    h1{
+      margin:14px 0 8px;
+      color:var(--text);
+      font-size:22px;
+      line-height:1.2;
+    }
+    p{
+      margin:0 0 14px;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:15px;
+    }
+    .actions{
+      padding: 0 18px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .btn{
+      appearance:none;
+      border:0;
+      border-radius:14px;
+      padding:14px 14px;
+      font-weight:700;
+      cursor:pointer;
+      width:100%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      text-decoration:none;
+      user-select:none;
+    }
+    .btn-primary{ background:var(--btn); color:var(--btn2); }
+    .btn-ghost{
+      background:transparent;
+      border:1px solid var(--border);
+      color:var(--text);
+    }
+    .small{
+      font-size:13px;
+      color:var(--muted);
+      padding: 0 18px 18px;
+      border-top:1px solid var(--border);
+    }
+    .kbd{
+      display:inline-block;
+      padding:2px 7px;
+      border:1px solid var(--border);
+      border-bottom-width:2px;
+      border-radius:8px;
+      font-size:12px;
+      color:var(--text);
+      background: rgba(0,0,0,.03);
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:18px;
+      background: rgba(0,0,0,.85);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:14px;
+      display:none;
+      max-width: min(520px, calc(100% - 24px));
+      text-align:center;
+    }
+    .show{ display:block; }
+    .hidden{ display:none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="dot"></div>
+      <span>Continuar</span>
+    </div>
+
+    <div class="card">
+      <div class="top">
+        <div class="badge" id="envBadge">🔗 Link seguro</div>
+        <h1>Para abrir corretamente, toque no botão abaixo</h1>
+        <p id="subtitle">
+          Alguns links podem falhar no navegador interno do Instagram. Vamos abrir do jeito mais compatível.
+        </p>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="btnAbrir">Abrir agora</button>
+        <button class="btn btn-ghost" id="btnCopiar">Copiar link</button>
+      </div>
+
+      <div class="small" id="helpBox">
+        <strong>Dica rápida:</strong>
+        <div class="row">
+          <div>iPhone: toque em <span class="kbd">…</span> e depois <span class="kbd">Abrir no Safari</span></div>
+          <div>Android: toque em <span class="kbd">…</span> e <span class="kbd">Abrir no navegador</span></div>
+        </div>
+        <div class="row">
+          <span id="destinoPreview" style="word-break:break-all;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copiado!</div>
+
+  <script>
+    // ✅ COLOQUE SEU LINK FINAL AQUI:
+    const DESTINO = "https://site.eklesiaonline.com.br/ONg5h5";
+
+    const ua = navigator.userAgent || "";
+    const isInstagram = /Instagram/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isAndroid = /Android/i.test(ua);
+
+    const envBadge = document.getElementById("envBadge");
+    const subtitle = document.getElementById("subtitle");
+    const destinoPreview = document.getElementById("destinoPreview");
+    const btnAbrir = document.getElementById("btnAbrir");
+    const btnCopiar = document.getElementById("btnCopiar");
+    const toast = document.getElementById("toast");
+
+    destinoPreview.textContent = DESTINO;
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"), 1600);
+    }
+
+    function openBestEffort(url){
+      // 1) Tenta abrir em nova aba (com clique do usuário)
+      const win = window.open(url, "_blank", "noopener,noreferrer");
+
+      // 2) Se o Instagram bloquear window.open, faz fallback para navegação direta
+      // (ainda pode abrir interno, mas costuma funcionar melhor que auto-redirect)
+      if (!win) {
+        window.location.href = url;
+      }
+    }
+
+    function copyToClipboard(text){
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+      }
+      // Fallback antigo
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      return Promise.resolve();
+    }
+
+    // Ajustes visuais conforme ambiente
+    if (isInstagram) {
+      envBadge.textContent = "📲 Abrindo pelo Instagram";
+      subtitle.textContent = "Toque em “Abrir agora”. Se não abrir, copie o link e use o menu (… ) para abrir no navegador.";
+    } else {
+      envBadge.textContent = "🌐 Navegador comum";
+      subtitle.textContent = "Toque em “Abrir agora” para continuar.";
+    }
+
+    btnAbrir.addEventListener("click", () => {
+      // Evita redirecionamento automático: só por clique.
+      openBestEffort(DESTINO);
+    });
+
+    btnCopiar.addEventListener("click", async () => {
+      try{
+        await copyToClipboard(DESTINO);
+        showToast("Link copiado!");
+      }catch(e){
+        showToast("Não foi possível copiar automaticamente.");
+      }
+    });
+  </script>
+</body>
+</html>
